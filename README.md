@@ -1,2 +1,2 @@
-# unlimited-race-game
-Game with unlimited road for car
+# snake-game-unity
+Game about snake eating food
