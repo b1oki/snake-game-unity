@@ -25,15 +25,21 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        RotateSnake();
+        MoveSnake();
+    }
+
+    private void RotateSnake()
+    {
         var rotation = Input.GetAxis("Horizontal") * 4.0f;
         print($"Current {rotation}");
         print($"Global {_transform.rotation.y}");
         _transform.Rotate(0, rotation, 0);
-        MoveSnake(_transform.position + _transform.forward * speed);
     }
 
-    private void MoveSnake(Vector3 newPosition)
+    private void MoveSnake()
     {
+        var newPosition = _transform.position + _transform.forward * speed;
         var sqrDistance = bonesDistance * bonesDistance;
         var previousBonePosition = _transform.position;
         foreach (var bone in tails)
