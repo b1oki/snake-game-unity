@@ -32,8 +32,6 @@ public class Player : MonoBehaviour
     private void RotateSnake()
     {
         var rotation = Input.GetAxis("Horizontal") * 4.0f;
-        print($"Current {rotation}");
-        print($"Global {_transform.rotation.y}");
         _transform.Rotate(0, rotation, 0);
     }
 
