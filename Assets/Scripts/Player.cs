@@ -9,16 +9,18 @@ public class Player : MonoBehaviour
     public UnityEvent onEat;
     public UnityEvent onDie;
     public List<Transform> tails;
-    [Range(0.5f, 1)] public float bonesDistance;
+    [Range(0.5f, 1.0f)] public float bonesDistance;
     public GameObject bonePrefab;
-    [Range(0, 0.5f)] public float speed;
+    [Range(0.0f, 0.2f)] public float speed;
 
     private Transform _transform;
-    private readonly string[] _dangerObjects = {"Wall", "Tail"};
+    private Vector3 _defaultTailPosition;
+    private readonly string[] _dangerObjects = { "Wall", "Tail" };
 
     private void Start()
     {
         _transform = GetComponent<Transform>();
+        _defaultTailPosition = new Vector3(10.0f, _transform.position.y, 0.0f);
     }
 
     private void Update()
@@ -29,27 +31,20 @@ public class Player : MonoBehaviour
 
     private void RotateSnake()
     {
-        float currentAngle = _transform.eulerAngles.y;
-        var rotation = currentAngle;
-        var vertical = Input.GetAxis("Vertical");
-        var horizontal = Input.GetAxis("Horizontal");
-        if (horizontal > 0) {
-            rotation = 90;
-        } else if (horizontal < 0) {
-            rotation = 270;
-        } else if (vertical > 0) {
-            rotation = 0;
-        } else if (vertical < 0) {
-            rotation = 180;
-        }
-        if (rotation != currentAngle) {
-            _transform.rotation = Quaternion.Euler(0, rotation, 0);
-        }
+        var rotation = Input.GetAxis("Horizontal") * 6.0f;
+        _transform.Rotate(0, rotation, 0);
+
     }
 
     private void MoveSnake()
     {
         var newPosition = _transform.position + _transform.forward * speed;
+        MoveTails();
+        _transform.position = newPosition;
+    }
+
+    private void MoveTails()
+    {
         var sqrDistance = bonesDistance * bonesDistance;
         var previousBonePosition = _transform.position;
         foreach (var bone in tails)
@@ -63,8 +58,12 @@ public class Player : MonoBehaviour
             bone.position = previousBonePosition;
             previousBonePosition = prePreviousBonePosition;
         }
+    }
 
-        _transform.position = newPosition;
+    private void AddTail()
+    {
+        var bone = Instantiate(bonePrefab, _defaultTailPosition, bonePrefab.transform.rotation);
+        tails.Add(bone.transform);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -73,8 +72,7 @@ public class Player : MonoBehaviour
         {
             onEat?.Invoke();
             Destroy(other.gameObject);
-            var bone = Instantiate(bonePrefab);
-            tails.Add(bone.transform);
+            AddTail();
         }
         else if (_dangerObjects.Contains(other.gameObject.tag))
         {
