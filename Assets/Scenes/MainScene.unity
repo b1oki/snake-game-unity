@@ -1140,7 +1140,7 @@ MonoBehaviour:
   tails:
   - {fileID: 1278936615}
   - {fileID: 953952659}
-  bonesDistance: 0.5
+  bonesDistance: 1
   bonePrefab: {fileID: 2883829179290860667, guid: fc5d0d12f964600d89bf8e937ced339a,
     type: 3}
   speed: 0.06
