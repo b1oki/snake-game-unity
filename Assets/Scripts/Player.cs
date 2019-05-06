@@ -40,12 +40,11 @@ public class Player : MonoBehaviour
     {
         var rotation = Input.GetAxis("Horizontal") * 6.0f;
         _transform.Rotate(0, rotation, 0);
-
     }
 
     private void MoveSnake()
     {
-        var newPosition = _transform.position + _transform.forward * speed;
+        var newPosition = _transform.position + (_transform.forward * speed);
         MoveTails();
         _transform.position = newPosition;
     }
