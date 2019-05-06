@@ -11,16 +11,19 @@ public class Player : MonoBehaviour
     public List<Transform> tails;
     [Range(0.5f, 1.0f)] public float bonesDistance;
     public GameObject bonePrefab;
+    public GameObject foodPrefab;
     [Range(0.0f, 0.2f)] public float speed;
 
     private Transform _transform;
     private Vector3 _defaultTailPosition;
     private readonly string[] _dangerObjects = { "Wall", "Tail" };
+    private readonly float _worldLimit = 5.0f;
 
     private void Start()
     {
         _transform = GetComponent<Transform>();
         _defaultTailPosition = new Vector3(10.0f, _transform.position.y, 0.0f);
+        AddFood();
     }
 
     private void Update()
@@ -66,6 +69,12 @@ public class Player : MonoBehaviour
         tails.Add(bone.transform);
     }
 
+    private void AddFood()
+    {
+        var foodPosition = new Vector3(Random.Range(-_worldLimit, _worldLimit), foodPrefab.transform.position.y, Random.Range(-_worldLimit, _worldLimit));
+        Instantiate(foodPrefab, foodPosition, foodPrefab.transform.rotation);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Food"))
@@ -73,6 +82,7 @@ public class Player : MonoBehaviour
             onEat?.Invoke();
             Destroy(other.gameObject);
             AddTail();
+            AddFood();
         }
         else if (_dangerObjects.Contains(other.gameObject.tag))
         {
