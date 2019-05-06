@@ -15,12 +15,10 @@ public class Player : MonoBehaviour
 
     private Transform _transform;
     private readonly string[] _dangerObjects = {"Wall", "Tail"};
-    private float _globalHeadAngle;
 
     private void Start()
     {
         _transform = GetComponent<Transform>();
-        _globalHeadAngle = 0;
     }
 
     private void Update()
@@ -31,8 +29,22 @@ public class Player : MonoBehaviour
 
     private void RotateSnake()
     {
-        var rotation = Input.GetAxis("Horizontal") * 4.0f;
-        _transform.Rotate(0, rotation, 0);
+        float currentAngle = _transform.eulerAngles.y;
+        var rotation = currentAngle;
+        var vertical = Input.GetAxis("Vertical");
+        var horizontal = Input.GetAxis("Horizontal");
+        if (horizontal > 0) {
+            rotation = 90;
+        } else if (horizontal < 0) {
+            rotation = 270;
+        } else if (vertical > 0) {
+            rotation = 0;
+        } else if (vertical < 0) {
+            rotation = 180;
+        }
+        if (rotation != currentAngle) {
+            _transform.rotation = Quaternion.AngleAxis(rotation, Vector3.up);
+        }
     }
 
     private void MoveSnake()
