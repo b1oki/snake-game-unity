@@ -75,6 +75,11 @@ public class Player : MonoBehaviour
         Instantiate(foodPrefab, foodPosition, foodPrefab.transform.rotation);
     }
 
+    private void NextGameTry()
+    {
+        SceneManager.LoadScene("MainScene");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Food"))
@@ -87,7 +92,7 @@ public class Player : MonoBehaviour
         else if (_dangerObjects.Contains(other.gameObject.tag))
         {
             onDie?.Invoke();
-            SceneManager.LoadScene("MainScene");
+            NextGameTry();
         }
     }
 }
