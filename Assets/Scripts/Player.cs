@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
             rotation = 180;
         }
         if (rotation != currentAngle) {
-            _transform.rotation = Quaternion.AngleAxis(rotation, Vector3.up);
+            _transform.rotation = Quaternion.Euler(0, rotation, 0);
         }
     }
 
