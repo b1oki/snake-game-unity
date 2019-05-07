@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,6 +10,7 @@ public class Player : MonoBehaviour
 {
     public UnityEvent onEat;
     public UnityEvent onDie;
+    public UnityEvent onGameOver;
     public Text livesText;
     public List<Transform> tails;
     [Range(0.5f, 1.0f)] public float bonesDistance;
@@ -21,6 +23,7 @@ public class Player : MonoBehaviour
     private int _livesLeft = 3;
     private readonly string[] _dangerObjects = { "Wall", "Tail" };
     private readonly float _worldLimit = 5.0f;
+    private bool _isGameOver = false;
 
     private void Start()
     {
@@ -32,8 +35,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        RotateSnake();
-        MoveSnake();
+        if (!_isGameOver)
+        {
+            RotateSnake();
+            MoveSnake();
+        }
     }
 
     private void RotateSnake()
@@ -78,13 +84,32 @@ public class Player : MonoBehaviour
         Instantiate(foodPrefab, foodPosition, foodPrefab.transform.rotation);
     }
 
+    IEnumerator GameOver()
+    {
+        int gameOverTimer = 3;
+        while (gameOverTimer > 0)
+        {
+            yield return new WaitForSeconds(1.0f);
+            gameOverTimer--;
+        }
+        SceneManager.LoadScene("MenuScene");
+    }
+
     private void NextGameTry()
     {
         _livesLeft -= 1;
         SetLivesText();
         if (_livesLeft < 1)
         {
-            SceneManager.LoadScene("MainScene");
+            _isGameOver = true;
+            onGameOver?.Invoke();
+            StartCoroutine("GameOver");
+        }
+        // place snake to start position
+        _transform.position = bonePrefab.transform.position;
+        foreach (var bone in tails)
+        {
+            bone.position = _defaultTailPosition;
         }
     }
 
