@@ -33,11 +33,17 @@ public class Player : MonoBehaviour
         AddFood();
     }
 
+    private void LateUpdate() {
+        if (!_isGameOver)
+        {
+            RotateSnake();
+        }
+    }
+
     private void Update()
     {
         if (!_isGameOver)
         {
-            RotateSnake();
             MoveSnake();
         }
     }
